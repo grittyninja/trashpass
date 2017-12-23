@@ -62,7 +62,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Herdian Nugraha* - *Initial work* - [hrdn](https://github.com/hrdn)
+* **Herdian Nugraha** ([hrdn](https://github.com/hrdn))
 
 
 ## License
