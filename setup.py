@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'trashpass',
   packages = ['trashpass'], 
-  version = '0.1.1',
+  version = '0.1.2',
   description = 'Library that helps bot developer to read disposable email from Trash-Mail',
   author = 'Herdian Nugraha',
   author_email = 'herdiannugraha@gmail.com',
