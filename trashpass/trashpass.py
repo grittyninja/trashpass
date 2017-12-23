@@ -2,7 +2,6 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-
 class Trashpass:
     def __init__(self):
         """
