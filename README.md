@@ -1,5 +1,6 @@
-[![PyPI version](https://badge.fury.io/py/trashpass.svg)](https://badge.fury.io/py/trashpass)
+
 # Trashpass
+[![PyPI version](https://badge.fury.io/py/trashpass.svg)](https://badge.fury.io/py/trashpass)
 
 Trashpass /ˈtɹɛspəs/ - Library that helps bot developer to read disposable email from [Trash-Mail](https://trash-mail.com)
 
