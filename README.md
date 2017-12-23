@@ -1,4 +1,3 @@
-
 # Trashpass
 [![PyPI version](https://badge.fury.io/py/trashpass.svg)](https://badge.fury.io/py/trashpass)
 
@@ -59,6 +58,10 @@ messages = tr.read_inbox()
 tr.refresh_inbox()
 messages = tr.read_inbox()
 # messages = {'2': {'from': 'dummysend@gmail.com', 'subject': 'Re: this is test box email', 'date': '23.12.2017 - 8:07 am', 'text': 'hallo  '}, '1': {'from': 'dummysend@gmail.com', 'subject': 'this is test box email', 'date': '23.12.2017 - 8:05 am', 'text': 'halo  '}}
+
+"" get session """
+session = tr.session
+# session = {'PHPSESSID': 'g24hq61gv6d9gnckck316f65u6'}
 
 ```
 
