@@ -1,44 +1,27 @@
-import requests
 import re
+import requests
 from bs4 import BeautifulSoup
 
 
-class Trashpass:
+class Trashpass(object):
     def __init__(self):
         """
         initial session from trash-mail
         """
         self.session = {}
-
-    def refresh_session(self):
-        url = "https://www.trash-mail.com/"
-        headers = {
+        self.singlemail_headers = {
             'User-Agent': (
                 "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0)"
                 " Gecko/20100101 Firefox/57.0"
             ),
-            'Accept': (
-                "text/html,application/xhtml+xml,application/xml;"
-                "q=0.9,*/*;q=0.8"
-            ),
+            'Accept': "text/html, */*; q=0.01",
             'Accept-Language': "en-US,en;q=0.5",
             'Accept-Encoding': "gzip, deflate",
-            'DNT': '1',
-            "Upgrade-Insecure-Requests": '1'
+            'Referer': "https://www.trash-mail.com/inbox/",
+            'X-Requested-With': "XMLHttpRequest",
+            'DNT': '1'
         }
-        response_cookies = requests.get(
-            url, headers=headers).headers['set-cookie']
-        PHPSESSID = re.search(
-            r"PHPSESSID=(\w+);", response_cookies).group(1)
-        self.session = {'PHPSESSID': PHPSESSID}
-
-    def read_inbox(self, start=1, end=3):
-        """
-        send GET request to /inbox/ and parsing it into JSON
-        """
-        url = "https://www.trash-mail.com/inbox/"
-        cookies = self.session
-        headers = {
+        self.headers = {
             'User-Agent': (
                 "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0)"
                 " Gecko/20100101 Firefox/57.0"
@@ -53,75 +36,84 @@ class Trashpass:
             'DNT': '1',
             'Upgrade-Insecure-Requests': '1'
         }
-        req = requests.get(url, headers=headers, cookies=cookies)
-        mainmail = BeautifulSoup(req.text, 'html.parser')
+        self.url = "https://www.trash-mail.com"
+
+    def refresh_session(self):
+        response_cookies = requests.get(
+            self.url, headers=self.headers).headers['set-cookie']
+        phpsessid = re.search(
+            r"PHPSESSID=(\w+);", response_cookies).group(1)
+        self.session = {'PHPSESSID': phpsessid}
+
+    def read_inbox(self, start=1, end=3):
+        """
+        send GET request to /inbox/ and parsing it into JSON
+        """
+        mainmail = BeautifulSoup(
+            requests.get(
+                "{}/inbox".format(self.url),
+                headers=self.headers,
+                cookies=self.session
+            ).text,
+            'html.parser'
+        )
         messages = {}
-        messages_parsed = mainmail.find_all('td', 'message-td')
-        singlemail_headers = {
-            'User-Agent': (
-                "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0)"
-                " Gecko/20100101 Firefox/57.0"
-            ),
-            'Accept': "text/html, */*; q=0.01",
-            'Accept-Language': "en-US,en;q=0.5",
-            'Accept-Encoding': "gzip, deflate",
-            'Referer': "https://www.trash-mail.com/inbox/",
-            'X-Requested-With': "XMLHttpRequest",
-            'DNT': '1'
-        }
 
         """
         visit every message and parse images and link
         """
-        for m in messages_parsed:
-            index = int(m.a['nr'])
+        for msg in mainmail.find_all('td', 'message-td'):
+            index = int(msg.a['nr'])
             if index > end:
                 continue
             elif index < start:
                 break
 
             messages[index] = {
-                'from': m.find(
+                'from': msg.find(
                     id="message-from-{}".format(index)).text,
-                'subject': m.find(
+                'subject': msg.find(
                     id="message-subject-{}".format(index)).text,
-                'date': m.find(
+                'date': msg.find(
                     id="message-date-{}".format(index)
                     ).text
             }
-            url = (
-                "https://www.trash-mail.com/en/mail/message/id/{}"
-            ).format(index)
-            req = requests.get(
-                url, headers=singlemail_headers, cookies=self.session)
-            singlemail = BeautifulSoup(req.text, 'html.parser')
+
+            singlemail = BeautifulSoup(
+                requests.get(
+                    "{}/en/mail/message/id/{}".format(self.url, index),
+                    headers=self.singlemail_headers,
+                    cookies=self.session
+                ).text,
+                'html.parser'
+            )
             links = {}
             attachments = {}
             message_content = singlemail.find(class_='message-content')
 
-            html_links = message_content.find_all('a')
-            if html_links:
-                link_id = 1
-                for link in html_links:
+            chunks = message_content.find_all('a')
+            if chunks:
+                count_id = 1
+                for link in chunks:
                     if link.has_attr('href'):
-                        links[link_id] = {
+                        links[count_id] = {
                             'title': link.text,
                             'url': link['href']
                         }
-                        link_id += 1
+                        count_id += 1
                 messages[index]['links'] = links
 
-            html_attachments = singlemail.find_all('p', class_='attachment')
-            if html_attachments:
-                attachment_id = 1
-                for att in html_attachments:
+            chunks = singlemail.find_all('p', class_='attachment')
+            if chunks:
+                count_id = 1
+                for att in chunks:
                     att = att.find('a')
                     if att.has_attr('href'):
-                        attachments[attachment_id] = {
+                        attachments[count_id] = {
                             'title': att.text.lstrip(),
                             'url': att['href']
                         }
-                        attachment_id += 1
+                        count_id += 1
                 messages[index]['attachments'] = attachments
             messages[index]['text'] = message_content.text
 
