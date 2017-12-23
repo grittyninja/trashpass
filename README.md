@@ -40,13 +40,24 @@ import trashpass
 
 tr = trashpass.Trashpass()
 
-# set disposable email to mysecretinbox1337@trash-mail.com
+""" set disposable email to mysecretinbox1337@trash-mail.com """
+
 tr.set_target('mysecretinbox1337')
 messages = tr.read_inbox()
 
-# set disposable email to myverysecretinbox1337@trash-mail.com
+
+""" set disposable email to myverysecretinbox1337@trash-mail.com """
+
 tr.set_target('myverysecretinbox1337')
 messages = tr.read_inbox()
+# messages = {}
+
+
+""" refresh inbox """
+
+tr.refresh_inbox()
+messages = tr.read_inbox()
+# messages = {'2': {'from': 'dummysend@gmail.com', 'subject': 'Re: this is test box email', 'date': '23.12.2017 - 8:07 am', 'text': 'hallo  '}, '1': {'from': 'dummysend@gmail.com', 'subject': 'this is test box email', 'date': '23.12.2017 - 8:05 am', 'text': 'halo  '}}
 
 ```
 
