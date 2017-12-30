@@ -9,26 +9,14 @@ Trashpass /ˈtɹɛspəs/ - Library that helps bot developer to read disposable e
 
 you need to install prequisites libraries in order to make trashpass run
 
-#### python2
 ```
-pip2 install requests bs4
-```
-
-#### python3
-```
-pip3 install requests bs4
+pip install requests bs4
 ```
 
 ### Installing
 
-#### python2
 ```
-pip2 install trashpass
-```
-
-#### python3
-```
-pip3 install trashpass
+pip install trashpass
 ```
 
 ### Testing
@@ -42,21 +30,21 @@ tr = trashpass.Trashpass()
 
 """ set disposable email to mysecretinbox1337@trash-mail.com """
 
-tr.set_target('mysecretinbox1337')
-messages = tr.read_inbox()
+tr.target('mysecretinbox1337')
+messages = tr.read()
 
 
 """ set disposable email to myverysecretinbox1337@trash-mail.com """
 
-tr.set_target('myverysecretinbox1337')
-messages = tr.read_inbox()
+tr.target('myverysecretinbox1337')
+messages = tr.read()
 # messages = {}
 
 
 """ refresh inbox """
 
-tr.refresh_inbox()
-messages = tr.read_inbox()
+tr.refresh()
+messages = tr.read()
 # messages = {'2': {'from': 'dummysend@gmail.com', 'subject': 'Re: this is test box email', 'date': '23.12.2017 - 8:07 am', 'text': 'hallo  '}, '1': {'from': 'dummysend@gmail.com', 'subject': 'this is test box email', 'date': '23.12.2017 - 8:05 am', 'text': 'halo  '}}
 
 "" get session """
@@ -73,7 +61,7 @@ session = tr.session
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [0.1.0](https://github.com/hrdn/trashpass/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [1.1](https://github.com/hrdn/trashpass/tags). 
 
 ## Authors
 

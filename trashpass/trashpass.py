@@ -45,7 +45,7 @@ class Trashpass(object):
             r"PHPSESSID=(\w+);", response_cookies).group(1)
         self.session = {'PHPSESSID': phpsessid}
 
-    def read_inbox(self, start=1, end=3):
+    def read(self, start=1, end=3):
         """
         send GET request to /inbox/ and parsing it into JSON
         """
@@ -119,7 +119,7 @@ class Trashpass(object):
 
         return messages
 
-    def refresh_inbox(self):
+    def refresh(self):
         """
         send POST request to /refresh-inbox/
         """
@@ -150,7 +150,7 @@ class Trashpass(object):
         )
         requests.post(url, headers=headers, cookies=cookies, data=mail_data)
 
-    def set_target(self, mail_address):
+    def target(self, mail_address):
         """
         refresh session and send POST request
         to /inbox/ containing email parameter
